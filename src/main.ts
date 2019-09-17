@@ -1,9 +1,10 @@
 import * as core from '@actions/core';
+import * as cfg from './configurator';
 
 async function run() {
   try {
-    const myInput = core.getInput('myInput');
-    core.debug(`Hello ${myInput}`);
+    let c = cfg.getConfig();
+    await c.configure();
   } catch (error) {
     core.setFailed(error.message);
   }
