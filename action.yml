@@ -2,9 +2,14 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  name:              # change this
+    description: 'Name your tool will be configured with'
+    required: true
+  url:
+    description: 'URL to download your tool from'
+    required: true
+  pathInArchive:
+    description: 'If the URL points to an archive, this field is required, and points to the path of the tool to configure (relative to the archive root).'
 runs:
   using: 'node12'
   main: 'lib/main.js'

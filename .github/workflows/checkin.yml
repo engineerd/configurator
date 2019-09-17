@@ -3,7 +3,10 @@ on: [pull_request, push]
 
 jobs:
   check_pr:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
     - uses: actions/checkout@v1
 
