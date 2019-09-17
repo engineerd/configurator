@@ -59,12 +59,10 @@ export class Configurator {
         let toolPath = binPath();
         await io.mkdirP(toolPath);
         await io.mv(downloadPath, path.join(toolPath, this.name));
-        // TODO
-        //
-        // Ensure of a cross-platform way to make binary executable
-        // if (process.platform !== 'win32') {
-        //     await exec.exec("chmod", ["+x", path.join(toolPath, this.name)])
-        // }
+
+        if (process.platform !== 'win32') {
+            await exec.exec("chmod", ["+x", path.join(toolPath, this.name)])
+        }
 
         core.addPath(toolPath);
     }

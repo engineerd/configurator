@@ -2,7 +2,7 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  name:              # change this
+  name:
     description: 'Name your tool will be configured with'
     required: true
   url:
