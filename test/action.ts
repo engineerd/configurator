@@ -1,7 +1,8 @@
 import * as path from 'path';
-const toolDir = path.join(__dirname, 'tmp', 'runner', 'tools');
-const tempDir = path.join(__dirname, 'tmp', 'runner', 'temp');
-const dataDir = path.join(__dirname, 'tmp', 'data');
+import * as os from 'os';
+const toolDir = path.join(os.tmpdir(), 'runner', 'tools');
+const tempDir = path.join(os.tmpdir(), 'tmp', 'runner', 'temp');
+const dataDir = path.join(os.tmpdir(), 'tmp', 'data');
 
 process.env['RUNNER_TOOL_CACHE'] = toolDir;
 process.env['RUNNER_TEMP'] = tempDir;
