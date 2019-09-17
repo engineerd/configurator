@@ -1,5 +1,5 @@
-name: 'Configurator'
-description: 'Cross-platform GitHub Action for downloading statically compiled tools (or extracting them from an archive) and adding them to the path.'
+name: 'engineerd/configurator'
+description: 'Easy and cross-platform action to download, extract, and add to path statically compiled tools.'
 author: 'Engineerd'
 inputs:
   name:
