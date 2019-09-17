@@ -1,6 +1,6 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Configurator'
+description: 'Cross-platform GitHub Action for downloading statically compiled tools (or extracting them from an archive) and adding them to the path.'
+author: 'Engineerd'
 inputs:
   name:
     description: 'Name your tool will be configured with'
