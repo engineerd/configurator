@@ -35,6 +35,7 @@ export class Configurator {
         console.log(`Downloading tool from ${this.url}...`);
         let downloadPath: string | null = null;
         let archivePath: string | null = null;
+        const tempDir = path.join(os.tmpdir(), 'tmp', 'runner', 'temp');
         downloadPath = await tc.downloadTool(this.url);
 
         switch (this.getArchiveType()) {
@@ -42,15 +43,15 @@ export class Configurator {
                 return this.moveToPath(downloadPath);
 
             case ArchiveType.TarGz:
-                archivePath = await tc.extractTar(downloadPath);
+                archivePath = await tc.extractTar(downloadPath, tempDir);
                 return this.moveToPath(path.join(archivePath, this.pathInArchive));
 
             case ArchiveType.Zip:
-                archivePath = await tc.extractZip(downloadPath);
+                archivePath = await tc.extractZip(downloadPath, tempDir);
                 return this.moveToPath(path.join(archivePath, this.pathInArchive));
             
             case ArchiveType.Zip:
-                archivePath = await tc.extract7z(downloadPath);
+                archivePath = await tc.extract7z(downloadPath, tempDir);
                 return this.moveToPath(path.join(archivePath, this.pathInArchive));
         }
     }
