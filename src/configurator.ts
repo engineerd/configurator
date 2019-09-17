@@ -50,7 +50,7 @@ export class Configurator {
                 archivePath = await tc.extractZip(downloadPath, tempDir);
                 return this.moveToPath(path.join(archivePath, this.pathInArchive));
             
-            case ArchiveType.Zip:
+            case ArchiveType.SevenZ:
                 archivePath = await tc.extract7z(downloadPath, tempDir);
                 return this.moveToPath(path.join(archivePath, this.pathInArchive));
         }
