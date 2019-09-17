@@ -41,7 +41,7 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+
 jspm_packages/
 
 # TypeScript v1 declaration files
@@ -90,5 +90,6 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-lib/
+# lib/
+# node_modules/
 test/tmp
