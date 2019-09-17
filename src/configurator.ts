@@ -36,6 +36,7 @@ export class Configurator {
         let downloadPath: string | null = null;
         let archivePath: string | null = null;
         const tempDir = path.join(os.tmpdir(), 'tmp', 'runner', 'temp');
+        await io.mkdirP(tempDir);
         downloadPath = await tc.downloadTool(this.url);
 
         switch (this.getArchiveType()) {
