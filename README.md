@@ -12,6 +12,29 @@ Inputs:
 
 Examples:
 
+- cross platform action:
+
+```
+jobs:
+  configurator:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+        - {os: "ubuntu-latest", url: "https://get.helm.sh/helm-v3.0.0-beta.3-linux-amd64.tar.gz", name: "hb3", pathInArchive: "linux-amd64/helm" }
+        - {os: "windows-latest", url: "https://get.helm.sh/helm-v3.0.0-beta.3-windows-amd64.zip", name: "hb3.exe", pathInArchive: "windows-amd64/helm.exe" }
+    steps:
+      - uses: engineerd/configurator@v0.0.1
+        with:
+          name: ${{ matrix.config.name }}
+          url: ${{ matrix.config.url }}
+          pathInArchive: ${{ matrix.config.pathInArchive }}
+      - name: Testing
+        run: |
+          hb3 --help
+```
+
+
 - download an executable from a given URL and move it to a folder in path with the given name:
 ```
 name: "Test plain file"
