@@ -14,7 +14,7 @@ Examples:
 
 - cross platform action:
 
-```
+```yaml
 jobs:
   configurator:
     runs-on: ${{ matrix.config.os }}
@@ -36,7 +36,8 @@ jobs:
 
 
 - download an executable from a given URL and move it to a folder in path with the given name:
-```
+
+```yaml
 name: "Test plain file"
 on: [pull_request, push]
 
@@ -55,7 +56,7 @@ jobs:
 
 - download a `.tar.gz` archive from a given URL, and move a certain file from the archive directory to a folder in path, with a given name:
 
-```
+```yaml
 name: "Test .tar.gz"
 on: [pull_request, push]
 
@@ -75,7 +76,7 @@ jobs:
 
 - download a `.zip` archive on Windows from a given URL, and move a certain file from the archive directory to a folder in path, with a given name:
 
-```
+```yaml
 name: "Test .zip"
 on: [pull_request, push]
 
