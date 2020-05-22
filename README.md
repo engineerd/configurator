@@ -9,7 +9,6 @@ Inputs:
 - `url`: URL to download your tool from (required)
 - `pathInArchive`: if the URL points to an archive, this field is required, and points to the path of the tool to configure (relative to the archive root).
 
-
 Examples:
 
 - cross platform action:
@@ -21,10 +20,20 @@ jobs:
     strategy:
       matrix:
         config:
-        - {os: "ubuntu-latest", url: "https://get.helm.sh/helm-v3.0.0-beta.3-linux-amd64.tar.gz", name: "hb3", pathInArchive: "linux-amd64/helm" }
-        - {os: "windows-latest", url: "https://get.helm.sh/helm-v3.0.0-beta.3-windows-amd64.zip", name: "hb3.exe", pathInArchive: "windows-amd64/helm.exe" }
+          - {
+              os: "ubuntu-latest",
+              url: "https://get.helm.sh/helm-v3.0.0-beta.3-linux-amd64.tar.gz",
+              name: "hb3",
+              pathInArchive: "linux-amd64/helm",
+            }
+          - {
+              os: "windows-latest",
+              url: "https://get.helm.sh/helm-v3.0.0-beta.3-windows-amd64.zip",
+              name: "hb3.exe",
+              pathInArchive: "windows-amd64/helm.exe",
+            }
     steps:
-      - uses: engineerd/configurator@v0.0.1
+      - uses: engineerd/configurator@v0.0.2
         with:
           name: ${{ matrix.config.name }}
           url: ${{ matrix.config.url }}
@@ -33,7 +42,6 @@ jobs:
         run: |
           hb3 --help
 ```
-
 
 - download an executable from a given URL and move it to a folder in path with the given name:
 
@@ -45,7 +53,7 @@ jobs:
   kind:
     runs-on: ubuntu-latest
     steps:
-      - uses: engineerd/configurator@v0.0.1
+      - uses: engineerd/configurator@v0.0.2
         with:
           name: "kind"
           url: "https://github.com/kubernetes-sigs/kind/releases/download/v0.5.1/kind-linux-amd64"
@@ -64,7 +72,7 @@ jobs:
   kind:
     runs-on: ubuntu-latest
     steps:
-      - uses: engineerd/configurator@v0.0.1
+      - uses: engineerd/configurator@v0.0.2
         with:
           name: "hb3"
           url: "https://get.helm.sh/helm-v3.0.0-beta.3-linux-amd64.tar.gz"
@@ -84,7 +92,7 @@ jobs:
   kind:
     runs-on: windows-latest
     steps:
-      - uses: engineerd/configurator@v0.0.1
+      - uses: engineerd/configurator@v0.0.2
         with:
           name: "hb3.exe"
           url: "https://get.helm.sh/helm-v3.0.0-beta.3-windows-amd64.zip"
