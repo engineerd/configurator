@@ -21,6 +21,10 @@ jobs:
             }
     steps:
       - uses: actions/checkout@v2
+      - name: "npm install"
+        run: npm install
+      - name: "npm run build"
+        run: npm run build
 
       - uses: ./
         with:
