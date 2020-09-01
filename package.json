@@ -20,10 +20,12 @@
   "author": "Engineerd",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "1.2.4",
-    "@actions/tool-cache": "1.5.5",
-    "@actions/exec": "1.0.4",
-    "@actions/io": "^1.0.0"
+    "@actions/core": "^1.2.5",
+    "@actions/exec": "^1.0.4",
+    "@actions/github": "^4.0.0",
+    "@actions/io": "^1.0.2",
+    "@actions/tool-cache": "^1.6.0",
+    "semver": "^7.3.2"
   },
   "devDependencies": {
     "@types/chai": "^4.0.1",
@@ -31,6 +33,7 @@
     "@types/mocha": "^2.2.41",
     "@types/node": "^12.0.4",
     "@types/rimraf": "2.0.2",
+    "@types/semver": "^7.3.3",
     "chai": "^4.1.0",
     "chai-fs": "^2.0.0",
     "mocha": "^7.1.1",
