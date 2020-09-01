@@ -1,0 +1,33 @@
+name: "PR Checks"
+on: [pull_request, push]
+
+jobs:
+  configurator:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - {
+              os: "ubuntu-latest",
+              url: "https://get.helm.sh/helm-${{version}}-linux-amd64.tar.gz",
+              name: "hb3",
+              pathInArchive: "linux-amd64/helm",
+            }
+          - {
+              os: "windows-latest",
+              urlTemplate: "https://get.helm.sh/helm-${{version}}-windows-amd64.zip",
+              name: "hb3.exe",
+              pathInArchive: "windows-amd64/helm.exe",
+            }
+    steps:
+      - uses: ./
+        with:
+          name: ${{ matrix.config.name }}
+          repo: "helm/helm"
+          version: "^v3.3.0"
+          urlTemplate: ${{ matrix.config.url }}
+          pathInArchive: ${{ matrix.config.pathInArchive }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Testing
+        run: |
+          hb3 --help
