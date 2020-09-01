@@ -4,6 +4,8 @@ import * as exec from "@actions/exec";
 import * as io from "@actions/io";
 import * as path from "path";
 import * as os from "os";
+import { getTag } from "./release";
+import Mustache from "mustache";
 
 const NameInput: string = "name";
 const URLInput: string = "url";
@@ -66,23 +68,29 @@ export class Configurator {
     this.urlTemplate = urlTemplate;
   }
 
-  getArchiveType(): ArchiveType {
-    if (this.url.endsWith(ArchiveType.TarGz)) return ArchiveType.TarGz;
-    if (this.url.endsWith(ArchiveType.Zip)) return ArchiveType.Zip;
-    if (this.url.endsWith(ArchiveType.SevenZ)) return ArchiveType.SevenZ;
-
-    return ArchiveType.None;
-  }
-
   async configure() {
-    console.log(`Downloading tool from ${this.url}...`);
+    let downloadURL: string;
+    if (this.fromGitHubReleases) {
+      let tag = await getTag(
+        this.token,
+        this.repo,
+        this.version,
+        this.includePrereleases
+      );
+
+      downloadURL = Mustache.render(this.urlTemplate, { version: tag });
+    } else {
+      downloadURL = this.url;
+    }
+
+    console.log(`Downloading tool from ${downloadURL}`);
     let downloadPath: string | null = null;
     let archivePath: string | null = null;
     const tempDir = path.join(os.tmpdir(), "tmp", "runner", "temp");
     await io.mkdirP(tempDir);
-    downloadPath = await tc.downloadTool(this.url);
+    downloadPath = await tc.downloadTool(downloadURL);
 
-    switch (this.getArchiveType()) {
+    switch (getArchiveType(downloadURL)) {
       case ArchiveType.None:
         return this.moveToPath(downloadPath);
 
@@ -111,6 +119,14 @@ export class Configurator {
 
     core.addPath(toolPath);
   }
+}
+
+export function getArchiveType(downloadURL: string): ArchiveType {
+  if (downloadURL.endsWith(ArchiveType.TarGz)) return ArchiveType.TarGz;
+  if (downloadURL.endsWith(ArchiveType.Zip)) return ArchiveType.Zip;
+  if (downloadURL.endsWith(ArchiveType.SevenZ)) return ArchiveType.SevenZ;
+
+  return ArchiveType.None;
 }
 
 export function binPath(): string {
