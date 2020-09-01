@@ -9,7 +9,7 @@ jobs:
         config:
           - {
               os: "ubuntu-latest",
-              url: "https://get.helm.sh/helm-{{version}}-linux-amd64.tar.gz",
+              urlTemplate: "https://get.helm.sh/helm-{{version}}-linux-amd64.tar.gz",
               name: "hb3",
               pathInArchive: "linux-amd64/helm",
             }
@@ -30,8 +30,8 @@ jobs:
         with:
           name: ${{ matrix.config.name }}
           repo: "helm/helm"
-          version: "^v3.3.0"
-          urlTemplate: ${{ matrix.config.url }}
+          version: "^v3.1.2"
+          urlTemplate: ${{ matrix.config.urlTemplate }}
           pathInArchive: ${{ matrix.config.pathInArchive }}
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Testing
