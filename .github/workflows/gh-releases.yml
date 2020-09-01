@@ -1,4 +1,4 @@
-name: "PR Checks"
+name: "GitHub Releases E2E"
 on: [pull_request, push]
 
 jobs:
@@ -20,6 +20,8 @@ jobs:
               pathInArchive: "windows-amd64/helm.exe",
             }
     steps:
+      - uses: actions/checkout@v2
+
       - uses: ./
         with:
           name: ${{ matrix.config.name }}
