@@ -1,13 +1,15 @@
 # @engineerd/configurator
 
-Cross-platform GitHub Action for downloading statically compiled tools (or extracting them from an archive) and adding them to the path.
-This has been tested on `ubuntu-latest` and `windows-latest`.
+Cross-platform GitHub Action for downloading statically compiled tools (or
+extracting them from an archive) and adding them to the path. This has been
+tested on `ubuntu-latest`, `windows-latest`, and `macos-latest`.
 
 Inputs:
 
 - `name`: name your tool will be configured with (required)
 - `url`: URL to download your tool from (required)
-- `pathInArchive`: if the URL points to an archive, this field is required, and points to the path of the tool to configure (relative to the archive root).
+- `pathInArchive`: if the URL points to an archive, this field is required, and
+  points to the path of the tool to configure (relative to the archive root).
 
 Examples:
 
@@ -43,7 +45,8 @@ jobs:
           hb3 --help
 ```
 
-- download an executable from a given URL and move it to a folder in path with the given name:
+- download an executable from a given URL and move it to a folder in path with
+  the given name:
 
 ```yaml
 name: "Test plain file"
@@ -62,7 +65,8 @@ jobs:
           kind --help
 ```
 
-- download a `.tar.gz` archive from a given URL, and move a certain file from the archive directory to a folder in path, with a given name:
+- download a `.tar.gz` archive from a given URL, and move a certain file from
+  the archive directory to a folder in path, with a given name:
 
 ```yaml
 name: "Test .tar.gz"
@@ -82,7 +86,8 @@ jobs:
           hb3 --help
 ```
 
-- download a `.zip` archive on Windows from a given URL, and move a certain file from the archive directory to a folder in path, with a given name:
+- download a `.zip` archive on Windows from a given URL, and move a certain file
+  from the archive directory to a folder in path, with a given name:
 
 ```yaml
 name: "Test .zip"
@@ -102,6 +107,7 @@ jobs:
           hb3 --help
 ```
 
-> Note: usually, Windows-specific tooling uses `.zip` archives - and the `tar` utility on Windows doesn't seem to handle `.tar.gz` files properly.
-
-> Note: for Linux, `chmod +x` is called on the target file before moving it to the path, ensuring it is executable. On Windows this is skipped.
+> Note: usually, Windows-specific tooling uses `.zip` archives - and the `tar`
+> utility on Windows doesn't seem to handle `.tar.gz` files properly. Note: for
+> Linux, `chmod +x` is called on the target file before moving it to the path,
+> ensuring it is executable. On Windows this is skipped.
