@@ -29,6 +29,7 @@ jobs:
       - uses: ./
         with:
           name: ${{ matrix.config.name }}
+          fromGitHubReleases: "true"
           repo: "helm/helm"
           version: "^v3.1.2"
           urlTemplate: ${{ matrix.config.urlTemplate }}
