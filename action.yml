@@ -7,9 +7,31 @@ inputs:
     required: true
   url:
     description: 'URL to download your tool from'
-    required: true
+    required: false
   pathInArchive:
     description: 'If the URL points to an archive, this field is required, and points to the path of the tool to configure (relative to the archive root).'
+    required: false
+  
+  fromGitHubReleases:
+    default: "false"
+    required: false
+    description: "If true, the action will try to download the binary from a GitHub release, given a correct semver version or range, GitHub token, repository, and URL template for the binary."
+  repo:
+    required: false
+    description: "GitHub repository of the tool. Used to list all releases and select the proper version. Required if `fromGitHubReleases` is true."
+  version:
+    required: false
+    description: "An exact semver version or version range (specified with ^ or ~). Required if `fromGitHubReleases` is true."
+  token:
+    required: false
+    description: "GitHub token used to list the GitHub releases for the supplied repository. Required if `fromGitHubReleases` is true."
+  urlTemplate:
+    required: false
+    description: "Required if `fromGitHubReleases` is true."
+  includePrereleases:
+    required: false
+    default: "false"
+    description: "If true, the action will select a release marked as prerelease."
 runs:
   using: 'node12'
   main: 'lib/main.js'
