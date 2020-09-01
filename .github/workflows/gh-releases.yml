@@ -9,13 +9,13 @@ jobs:
         config:
           - {
               os: "ubuntu-latest",
-              url: "https://get.helm.sh/helm-${{version}}-linux-amd64.tar.gz",
+              url: "https://get.helm.sh/helm-{{version}}-linux-amd64.tar.gz",
               name: "hb3",
               pathInArchive: "linux-amd64/helm",
             }
           - {
               os: "windows-latest",
-              urlTemplate: "https://get.helm.sh/helm-${{version}}-windows-amd64.zip",
+              urlTemplate: "https://get.helm.sh/helm-{{version}}-windows-amd64.zip",
               name: "hb3.exe",
               pathInArchive: "windows-amd64/helm.exe",
             }
