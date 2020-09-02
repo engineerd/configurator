@@ -18,6 +18,9 @@ jobs:
 
       - name: "npm run test"
         run: npm run test
+        env:
+          # this is needed for the tests to execute
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "npm audit"
         run: npm audit

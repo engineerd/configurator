@@ -1,0 +1,25 @@
+name: "GitHub Releases E2E"
+on: [pull_request, push]
+
+jobs:
+  kind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "npm install"
+        run: npm install
+      - name: "npm run build"
+        run: npm run build
+
+      - uses: ./
+        with:
+          name: "kind"
+          fromGitHubReleases: "true"
+          repo: "kubernetes-sigs/kind"
+          urlTemplate: "https://github.com/kubernetes-sigs/kind/releases/download/{{version}}/kind-linux-amd64"
+          version: "latest"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Testing
+        run: |
+          kind --help

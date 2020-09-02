@@ -1,0 +1,37 @@
+name: "URL E2E"
+on: [pull_request, push]
+
+jobs:
+  configurator:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - {
+              os: "ubuntu-latest",
+              url: "https://get.helm.sh/helm-v3.3.0-linux-amd64.tar.gz",
+              name: "h3",
+              pathInArchive: "linux-amd64/helm",
+            }
+          - {
+              os: "windows-latest",
+              url: "https://get.helm.sh/helm-v3.3.0-windows-amd64.zip",
+              name: "h3.exe",
+              pathInArchive: "windows-amd64/helm.exe",
+            }
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: "npm install"
+        run: npm install
+      - name: "npm run build"
+        run: npm run build
+
+      - uses: ./
+        with:
+          name: ${{ matrix.config.name }}
+          url: ${{ matrix.config.url }}
+          pathInArchive: ${{ matrix.config.pathInArchive }}
+      - name: Testing
+        run: |
+          h3 --help

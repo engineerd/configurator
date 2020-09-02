@@ -1,0 +1,40 @@
+name: "GitHub Releases E2E"
+on: [pull_request, push]
+
+jobs:
+  configurator:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - {
+              os: "ubuntu-latest",
+              urlTemplate: "https://get.helm.sh/helm-{{version}}-linux-amd64.tar.gz",
+              name: "h3",
+              pathInArchive: "linux-amd64/helm",
+            }
+          - {
+              os: "windows-latest",
+              urlTemplate: "https://get.helm.sh/helm-{{version}}-windows-amd64.zip",
+              name: "h3.exe",
+              pathInArchive: "windows-amd64/helm.exe",
+            }
+    steps:
+      - uses: actions/checkout@v2
+      - name: "npm install"
+        run: npm install
+      - name: "npm run build"
+        run: npm run build
+
+      - uses: ./
+        with:
+          name: ${{ matrix.config.name }}
+          fromGitHubReleases: "true"
+          repo: "helm/helm"
+          version: "^v3.1.2"
+          urlTemplate: ${{ matrix.config.urlTemplate }}
+          pathInArchive: ${{ matrix.config.pathInArchive }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Testing
+        run: |
+          h3 --help
