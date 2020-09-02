@@ -1,37 +1,37 @@
-name: 'engineerd/configurator'
-description: 'Easy and cross-platform action to download, extract, and add to path statically compiled tools.'
-author: 'Engineerd'
+name: "engineerd/configurator"
+description: "Easy and cross-platform action to download, extract, and add to path statically compiled tools."
+author: "Engineerd"
 inputs:
   name:
-    description: 'Name your tool will be configured with'
+    description: "Name your tool will be configured with"
     required: true
   url:
-    description: 'URL to download your tool from'
+    description: "URL to download your tool from"
     required: false
   pathInArchive:
-    description: 'If the URL points to an archive, this field is required, and points to the path of the tool to configure (relative to the archive root).'
+    description: "If the URL points to an archive, this field is required, and points to the path of the tool to configure (relative to the archive root)."
     required: false
-  
+
   fromGitHubReleases:
     default: "false"
     required: false
-    description: "If true, the action will try to download the binary from a GitHub release, given a correct semver version or range, GitHub token, repository, and URL template for the binary."
+    description: "If true, the action will attempt to get the latest version from the specified repo's GitHub Releases that matches the given semver version or range provided, and then download it using the provided urlTemplate."
   repo:
     required: false
     description: "GitHub repository of the tool. Used to list all releases and select the proper version. Required if `fromGitHubReleases` is true."
   version:
     required: false
-    description: "An exact semver version or version range (specified with ^ or ~). Required if `fromGitHubReleases` is true."
+    description: "An exact semver version or version range (specified with ^ or ~). If `latest` is provided, the action will download the latest release (respecting the `includePrereleases flag`), which, can break your action. Required if `fromGitHubReleases` is true."
   token:
     required: false
     description: "GitHub token used to list the GitHub releases for the supplied repository. Required if `fromGitHubReleases` is true."
   urlTemplate:
     required: false
-    description: "Required if `fromGitHubReleases` is true."
+    description: "A URL template used to construct the download URL, together with the desired version acquired from a GitHub release. For example, `https://get.helm.sh/helm-{{version}}-linux-amd64.tar.gz` (the version inserted here is the exact tag name from GitHub - check whether the tag name contains any `v` before the version when constructing the URL template) .Required if `fromGitHubReleases` is true."
   includePrereleases:
     required: false
     default: "false"
-    description: "If true, the action will select a release marked as prerelease."
+    description: "If true, the action will include prereleases when selecting a version from GitHub Releases."
 runs:
-  using: 'node12'
-  main: 'lib/main.js'
+  using: "node12"
+  main: "lib/main.js"
