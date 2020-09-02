@@ -103,7 +103,7 @@ jobs:
           - {
               os: "ubuntu-latest",
               urlTemplate: "https://get.helm.sh/helm-{{version}}-linux-amd64.tar.gz",
-              name: "hb3",
+              name: "h3",
               pathInArchive: "linux-amd64/helm",
             }
           - {
