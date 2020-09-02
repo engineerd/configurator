@@ -10,13 +10,13 @@ jobs:
           - {
               os: "ubuntu-latest",
               urlTemplate: "https://get.helm.sh/helm-{{version}}-linux-amd64.tar.gz",
-              name: "hb3",
+              name: "h3",
               pathInArchive: "linux-amd64/helm",
             }
           - {
               os: "windows-latest",
               urlTemplate: "https://get.helm.sh/helm-{{version}}-windows-amd64.zip",
-              name: "hb3.exe",
+              name: "h3.exe",
               pathInArchive: "windows-amd64/helm.exe",
             }
     steps:
@@ -37,4 +37,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Testing
         run: |
-          hb3 --help
+          h3 --help

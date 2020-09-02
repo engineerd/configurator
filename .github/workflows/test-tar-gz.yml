@@ -1,0 +1,21 @@
+name: "Test .tar.gz"
+on: [pull_request, push]
+
+jobs:
+  kind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "npm install"
+        run: npm install
+      - name: "npm run build"
+        run: npm run build
+
+      - uses: ./
+        with:
+          name: "h3"
+          url: "https://get.helm.sh/helm-v3.3.0-linux-amd64.tar.gz"
+          pathInArchive: "linux-amd64/helm"
+      - name: Testing
+        run: |
+          h3 --help

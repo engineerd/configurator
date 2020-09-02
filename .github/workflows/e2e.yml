@@ -9,16 +9,17 @@ jobs:
         config:
           - {
               os: "ubuntu-latest",
-              url: "https://get.helm.sh/helm-v3.0.0-beta.3-linux-amd64.tar.gz",
-              name: "hb3",
+              url: "https://get.helm.sh/helm-v3.3.0-linux-amd64.tar.gz",
+              name: "h3",
               pathInArchive: "linux-amd64/helm",
             }
           - {
               os: "windows-latest",
-              url: "https://get.helm.sh/helm-v3.0.0-beta.3-windows-amd64.zip",
-              name: "hb3.exe",
+              url: "https://get.helm.sh/helm-v3.3.0-windows-amd64.zip",
+              name: "h3.exe",
               pathInArchive: "windows-amd64/helm.exe",
             }
+
     steps:
       - uses: actions/checkout@v2
       - name: "npm install"
@@ -33,4 +34,4 @@ jobs:
           pathInArchive: ${{ matrix.config.pathInArchive }}
       - name: Testing
         run: |
-          hb3 --help
+          h3 --help
