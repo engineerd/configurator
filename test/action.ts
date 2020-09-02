@@ -1,17 +1,20 @@
 import * as path from "path";
 import * as os from "os";
+import "mocha";
+import { assert } from "chai";
+import * as cfg from "../src/configurator";
+import * as fs from "fs";
+import * as rimraf from "rimraf";
+import { getTag } from "../src/release";
+
+import * as semver from "semver";
+
 const toolDir = path.join(os.tmpdir(), "runner", "tools");
 const tempDir = path.join(os.tmpdir(), "tmp", "runner", "temp");
 const dataDir = path.join(os.tmpdir(), "tmp", "data");
 
 process.env["RUNNER_TOOL_CACHE"] = toolDir;
 process.env["RUNNER_TEMP"] = tempDir;
-
-import "mocha";
-import { assert } from "chai";
-import * as cfg from "../src/configurator";
-import * as fs from "fs";
-import * as rimraf from "rimraf";
 
 describe("test archive type", () => {
   it("correctly chooses the NONE archive type", () => {
@@ -142,5 +145,30 @@ describe("test GitHub release download", async () => {
     let c = cfg.getConfig();
     await c.configure();
     assert.equal(fs.existsSync(path.join(cfg.binPath(), c.name)), true);
+  });
+});
+
+// given that `getTag` returns the latest version that satisfies certain constraints,
+// there is a possibility that certain tests here would have to be updated over time
+describe("correctly select GitHub release based on version constraints", async () => {
+  let token: string = process.env["GITHUB_TOKEN"] || "";
+  it("select exact Helm version", async () => {
+    let tag = await getTag(token, "helm/helm", "v2.1.0", false);
+    assert.equal(tag, "v2.1.0");
+  });
+
+  it("correctly selects the latest v2.15 Helm release", async () => {
+    let tag = await getTag(token, "helm/helm", "~v2.15", false);
+    assert.equal(tag, "v2.15.2");
+  });
+
+  it("check latest prerelease", async () => {
+    let tag = await getTag(token, "engineerd/setup-kind", "latest", true);
+    assert.equal(tag, "v0.4.0");
+  });
+
+  it("check latest non-prerelease", async () => {
+    let tag = await getTag(token, "engineerd/setup-kind", "latest", false);
+    assert.equal(tag, "v0.3.0");
   });
 });
