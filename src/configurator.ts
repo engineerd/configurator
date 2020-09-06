@@ -69,6 +69,7 @@ export class Configurator {
   }
 
   async configure() {
+    this.validate();
     let downloadURL: string;
     if (this.fromGitHubReleases) {
       let tag = await getTag(
@@ -119,6 +120,57 @@ export class Configurator {
 
     core.addPath(toolPath);
   }
+
+  validate() {
+    if (this.name === "") {
+      throw new Error(
+        `the name used to configure the tool in path is required.`
+      );
+    }
+
+    if (!this.fromGitHubReleases && this.url === "") {
+      throw new Error(`url is required if trying to fetch tool directly.`);
+    }
+
+    if (!this.fromGitHubReleases && !matchesUrlRegex(this.url)) {
+      throw new Error(`url supplied as input is not a valid URL.`);
+    }
+
+    if (this.fromGitHubReleases && !matchesUrlRegex(this.urlTemplate)) {
+      throw new Error(`urlTemplate supplied as input is not a valid URL.`);
+    }
+
+    if (
+      getArchiveType(this.url) !== ArchiveType.None &&
+      this.pathInArchive === ""
+    ) {
+      throw new Error(
+        `url points to an archive, pathInArchive cannot be empty.`
+      );
+    }
+
+    if (
+      this.fromGitHubReleases &&
+      getArchiveType(this.urlTemplate) !== ArchiveType.None &&
+      this.pathInArchive === ""
+    ) {
+      throw new Error(
+        `urlTemplate points to an archive, pathInArchive cannot be empty.`
+      );
+    }
+
+    if (
+      this.fromGitHubReleases &&
+      (this.token === "" ||
+        this.repo === "" ||
+        this.version === "" ||
+        this.urlTemplate === "")
+    ) {
+      throw new Error(
+        `if trying to fetch version from GitHub releases, token, repo, version, and urlTemplate are required.`
+      );
+    }
+  }
 }
 
 export function getArchiveType(downloadURL: string): ArchiveType {
@@ -150,4 +202,11 @@ export enum ArchiveType {
   TarGz = ".tar.gz",
   Zip = ".zip",
   SevenZ = ".7z",
+}
+
+function matchesUrlRegex(input: string): boolean {
+  var reg = new RegExp(
+    "^(http://www.|https://www.|http://|https://)?[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$"
+  );
+  return reg.test(input);
 }
