@@ -122,52 +122,46 @@ export class Configurator {
   }
 
   validate() {
-    if (this.name === "") {
+    if (!this.name) {
       throw new Error(
-        `the name used to configure the tool in path is required.`
+        `"name" is required. This is used to set the executable name of the tool.`
       );
     }
 
-    if (!this.fromGitHubReleases && this.url === "") {
-      throw new Error(`url is required if trying to fetch tool directly.`);
+    if (!this.fromGitHubReleases && !this.url) {
+      throw new Error(`"url" is required when downloading a tool directly.`);
     }
 
     if (!this.fromGitHubReleases && !matchesUrlRegex(this.url)) {
-      throw new Error(`url supplied as input is not a valid URL.`);
+      throw new Error(`"url" supplied as input is not a valid URL.`);
     }
 
     if (this.fromGitHubReleases && !matchesUrlRegex(this.urlTemplate)) {
-      throw new Error(`urlTemplate supplied as input is not a valid URL.`);
+      throw new Error(`"urlTemplate" supplied as input is not a valid URL.`);
     }
 
-    if (
-      getArchiveType(this.url) !== ArchiveType.None &&
-      this.pathInArchive === ""
-    ) {
+    if (getArchiveType(this.url) !== ArchiveType.None && !this.pathInArchive) {
       throw new Error(
-        `url points to an archive, pathInArchive cannot be empty.`
+        `"pathInArchive" is required when "url" points to an archive file`
       );
     }
 
     if (
       this.fromGitHubReleases &&
       getArchiveType(this.urlTemplate) !== ArchiveType.None &&
-      this.pathInArchive === ""
+      !this.pathInArchive
     ) {
       throw new Error(
-        `urlTemplate points to an archive, pathInArchive cannot be empty.`
+        `"pathInArchive" is required when "urlTemplate" points to an archive file.`
       );
     }
 
     if (
       this.fromGitHubReleases &&
-      (this.token === "" ||
-        this.repo === "" ||
-        this.version === "" ||
-        this.urlTemplate === "")
+      (!this.token || !this.repo || !this.version || !this.urlTemplate)
     ) {
       throw new Error(
-        `if trying to fetch version from GitHub releases, token, repo, version, and urlTemplate are required.`
+        `if trying to fetch version from GitHub releases, "token", "repo", "version", and "urlTemplate" are required.`
       );
     }
   }

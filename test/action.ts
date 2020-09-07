@@ -202,7 +202,21 @@ describe("input validation", async () => {
     let c = cfg.getConfig();
     await expect(c.configure()).to.be.rejectedWith(
       Error,
-      "the name used to configure the tool in path is required."
+      `"name" is required. This is used to set the executable name of the tool.`
+    );
+  });
+
+  it("url is empty", async () => {
+    const input = {
+      INPUT_NAME: "some-name",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `"url" is required when downloading a tool directly.`
     );
   });
 
@@ -217,7 +231,7 @@ describe("input validation", async () => {
     let c = cfg.getConfig();
     await expect(c.configure()).to.be.rejectedWith(
       Error,
-      "url supplied as input is not a valid URL."
+      `"url" supplied as input is not a valid URL.`
     );
   });
 
@@ -226,13 +240,16 @@ describe("input validation", async () => {
       INPUT_NAME: "test-name",
       INPUT_FROMGITHUBRELEASES: "true",
       INPUT_URLTEMPLATE: "asd",
+      INPUT_REPO: "some-repo",
+      INPUT_TOKEN: "some-token",
+      INPUT_VERSION: "some-version",
     };
 
     for (const key in input) process.env[key] = input[key];
     let c = cfg.getConfig();
     await expect(c.configure()).to.be.rejectedWith(
       Error,
-      "urlTemplate supplied as input is not a valid URL."
+      `"urlTemplate" supplied as input is not a valid URL.`
     );
   });
 
@@ -246,7 +263,7 @@ describe("input validation", async () => {
     let c = cfg.getConfig();
     await expect(c.configure()).to.be.rejectedWith(
       Error,
-      "url points to an archive, pathInArchive cannot be empty."
+      `"pathInArchive" is required when "url" points to an archive file`
     );
   });
 
@@ -261,7 +278,7 @@ describe("input validation", async () => {
     let c = cfg.getConfig();
     await expect(c.configure()).to.be.rejectedWith(
       Error,
-      "urlTemplate points to an archive, pathInArchive cannot be empty."
+      `"pathInArchive" is required when "urlTemplate" points to an archive file.`
     );
   });
 
@@ -283,7 +300,7 @@ describe("input validation", async () => {
     let c = cfg.getConfig();
     await expect(c.configure()).to.be.rejectedWith(
       Error,
-      "if trying to fetch version from GitHub releases, token, repo, version, and urlTemplate are required."
+      `if trying to fetch version from GitHub releases, "token", "repo", "version", and "urlTemplate" are required.`
     );
   });
 
@@ -306,7 +323,7 @@ describe("input validation", async () => {
     let c = cfg.getConfig();
     await expect(c.configure()).to.be.rejectedWith(
       Error,
-      "if trying to fetch version from GitHub releases, token, repo, version, and urlTemplate are required."
+      `if trying to fetch version from GitHub releases, "token", "repo", "version", and "urlTemplate" are required.`
     );
   });
 
@@ -328,7 +345,7 @@ describe("input validation", async () => {
     let c = cfg.getConfig();
     await expect(c.configure()).to.be.rejectedWith(
       Error,
-      "if trying to fetch version from GitHub releases, token, repo, version, and urlTemplate are required."
+      `if trying to fetch version from GitHub releases, "token", "repo", "version", and "urlTemplate" are required.`
     );
   });
 
@@ -349,7 +366,7 @@ describe("input validation", async () => {
     let c = cfg.getConfig();
     await expect(c.configure()).to.be.rejectedWith(
       Error,
-      "urlTemplate supplied as input is not a valid URL."
+      `"urlTemplate" supplied as input is not a valid URL.`
     );
   });
 });
