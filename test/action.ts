@@ -1,13 +1,14 @@
 import * as path from "path";
 import * as os from "os";
 import "mocha";
-import { assert } from "chai";
+import * as chai from "chai";
+import { assert, expect } from "chai";
 import * as cfg from "../src/configurator";
 import * as fs from "fs";
 import * as rimraf from "rimraf";
 import { getTag } from "../src/release";
 
-import * as semver from "semver";
+chai.use(require("chai-as-promised"));
 
 const toolDir = path.join(os.tmpdir(), "runner", "tools");
 const tempDir = path.join(os.tmpdir(), "tmp", "runner", "temp");
@@ -17,8 +18,11 @@ process.env["RUNNER_TOOL_CACHE"] = toolDir;
 process.env["RUNNER_TEMP"] = tempDir;
 
 describe("test archive type", () => {
+  afterEach(() => cleanEnv());
+
   it("correctly chooses the NONE archive type", () => {
     const archiveTypeNoneInput = {
+      INPUT_NAME: "some-binary",
       INPUT_URL:
         "https://github.com/<some-repo>/releases/download/<release>/some-binary",
     };
@@ -31,6 +35,8 @@ describe("test archive type", () => {
 
   it("correctly chooses the TAR.GZ archive type", () => {
     const archiveTypeTarInput = {
+      INPUT_NAME: "some-binary",
+      INPUT_PATHINARCHIVE: "some-path",
       INPUT_URL:
         "https://github.com/<some-repo>/releases/download/<release>/some-tar-archive.tar.gz",
     };
@@ -43,6 +49,8 @@ describe("test archive type", () => {
 
   it("correctly chooses the ZIP archive type", () => {
     const archiveTypeZipInput = {
+      INPUT_NAME: "some-binary",
+      INPUT_PATHINARCHIVE: "some-path",
       INPUT_URL:
         "https://github.com/<some-repo>/releases/download/<release>/some-tar-archive.zip",
     };
@@ -55,6 +63,8 @@ describe("test archive type", () => {
 
   it("correctly chooses the 7Z archive type", () => {
     const archiveTypeZipInput = {
+      INPUT_NAME: "some-binary",
+      INPUT_PATHINARCHIVE: "some-path",
       INPUT_URL:
         "https://github.com/<some-repo>/releases/download/<release>/some-tar-archive.7z",
     };
@@ -67,6 +77,7 @@ describe("test archive type", () => {
 });
 
 describe("test URL download", async () => {
+  afterEach(() => cleanEnv());
   after(() => {
     rimraf.sync(tempDir);
     rimraf.sync(cfg.binPath());
@@ -121,6 +132,9 @@ describe("test URL download", async () => {
 });
 
 describe("test GitHub release download", async () => {
+  afterEach(() => {
+    cleanEnv();
+  });
   after(() => {
     rimraf.sync(tempDir);
     rimraf.sync(cfg.binPath());
@@ -151,6 +165,7 @@ describe("test GitHub release download", async () => {
 // given that `getTag` returns the latest version that satisfies certain constraints,
 // there is a possibility that certain tests here would have to be updated over time
 describe("correctly select GitHub release based on version constraints", async () => {
+  afterEach(() => cleanEnv());
   let token: string = process.env["GITHUB_TOKEN"] || "";
   it("select exact Helm version", async () => {
     let tag = await getTag(token, "helm/helm", "v2.1.0", false);
@@ -172,3 +187,204 @@ describe("correctly select GitHub release based on version constraints", async (
     assert.equal(tag, "v0.3.0");
   });
 });
+
+describe("input validation", async () => {
+  afterEach(() => {
+    cleanEnv();
+  });
+  it("name is empty", async () => {
+    const input = {
+      INPUT_NAME: "",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `"name" is required. This is used to set the executable name of the tool.`
+    );
+  });
+
+  it("url is empty", async () => {
+    const input = {
+      INPUT_NAME: "some-name",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `"url" is required when downloading a tool directly.`
+    );
+  });
+
+  it("fromGitHubRelease is false and invalid url", async () => {
+    const input = {
+      INPUT_NAME: "test-name",
+      INPUT_URL: "asd",
+      INPUT_FROMGITHUBRELEASES: "false",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `"url" supplied as input is not a valid URL.`
+    );
+  });
+
+  it("fromGitHubRelease is true and invalid urlTemplate", async () => {
+    const input = {
+      INPUT_NAME: "test-name",
+      INPUT_FROMGITHUBRELEASES: "true",
+      INPUT_URLTEMPLATE: "asd",
+      INPUT_REPO: "some-repo",
+      INPUT_TOKEN: "some-token",
+      INPUT_VERSION: "some-version",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `"urlTemplate" supplied as input is not a valid URL.`
+    );
+  });
+
+  it("url is archive and pathInArchive is empty", async () => {
+    const input = {
+      INPUT_NAME: "test-name",
+      INPUT_URL:
+        "https://github.com/<some-repo>/releases/download/<release>/some-tar-archive.tar.gz",
+    };
+    for (const key in input) process.env[key] = input[key];
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `"pathInArchive" is required when "url" points to an archive file`
+    );
+  });
+
+  it("urlTemplate is archive and pathInArchive is empty", async () => {
+    const input = {
+      INPUT_NAME: "h3",
+      INPUT_FROMGITHUBRELEASES: "true",
+      INPUT_URLTEMPLATE:
+        "https://get.helm.sh/helm-{{version}}-darwin-amd64.tar.gz",
+    };
+    for (const key in input) process.env[key] = input[key];
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `"pathInArchive" is required when "urlTemplate" points to an archive file.`
+    );
+  });
+
+  it("fromGitHubReleases is true and token is missing", async () => {
+    const input = {
+      INPUT_NAME: "h3",
+      INPUT_PATHINARCHIVE: "darwin-amd64/helm",
+      INPUT_FROMGITHUBRELEASES: "true",
+      INPUT_TOKEN: "",
+      INPUT_REPO: "helm/helm",
+      INPUT_VERSION: "^v3.1.2",
+      INPUT_INCLUDEPRERELEASES: "false",
+      INPUT_URLTEMPLATE:
+        "https://get.helm.sh/helm-{{version}}-darwin-amd64.tar.gz",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `if trying to fetch version from GitHub releases, "token", "repo", "version", and "urlTemplate" are required.`
+    );
+  });
+
+  it("fromGitHubReleases is true and repo is missing", async () => {
+    const input = {
+      INPUT_NAME: "h3",
+      INPUT_PATHINARCHIVE: "darwin-amd64/helm",
+
+      INPUT_FROMGITHUBRELEASES: "true",
+      INPUT_TOKEN: "some-token",
+      INPUT_REPO: "",
+      INPUT_VERSION: "^v3.1.2",
+      INPUT_INCLUDEPRERELEASES: "false",
+      INPUT_URLTEMPLATE:
+        "https://get.helm.sh/helm-{{version}}-darwin-amd64.tar.gz",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `if trying to fetch version from GitHub releases, "token", "repo", "version", and "urlTemplate" are required.`
+    );
+  });
+
+  it("fromGitHubReleases is true and version is missing", async () => {
+    const input = {
+      INPUT_NAME: "h3",
+      INPUT_PATHINARCHIVE: "darwin-amd64/helm",
+      INPUT_FROMGITHUBRELEASES: "true",
+      INPUT_TOKEN: "some-token",
+      INPUT_REPO: "helm/helm",
+      INPUT_VERSION: "",
+      INPUT_INCLUDEPRERELEASES: "false",
+      INPUT_URLTEMPLATE:
+        "https://get.helm.sh/helm-{{version}}-darwin-amd64.tar.gz",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `if trying to fetch version from GitHub releases, "token", "repo", "version", and "urlTemplate" are required.`
+    );
+  });
+
+  it("fromGitHubReleases is true and urlTemplate is missing", async () => {
+    const input = {
+      INPUT_NAME: "h3",
+      INPUT_PATHINARCHIVE: "darwin-amd64/helm",
+      INPUT_FROMGITHUBRELEASES: "true",
+      INPUT_TOKEN: "some-token",
+      INPUT_REPO: "helm/helm",
+      INPUT_VERSION: "^v3.1.2",
+      INPUT_INCLUDEPRERELEASES: "false",
+      INPUT_URLTEMPLATE: "",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await expect(c.configure()).to.be.rejectedWith(
+      Error,
+      `"urlTemplate" supplied as input is not a valid URL.`
+    );
+  });
+});
+
+function cleanEnv() {
+  const inputVars = [
+    "INPUT_NAME",
+    "INPUT_URL",
+    "INPUT_PATHINARCHIVE",
+    "INPUT_FROMGITHUBRELEASES",
+    "INPUT_TOKEN",
+    "INPUT_REPO",
+    "INPUT_VERSION",
+    "INPUT_INCLUDEPRERELEASES",
+    "INPUT_URLTEMPLATE",
+  ];
+
+  inputVars.forEach((i) => {
+    process.env[i] = "";
+  });
+}
