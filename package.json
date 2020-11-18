@@ -1,6 +1,6 @@
 {
   "name": "configurator",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "description": "A GitHub Action that configures statically compiled tools",
   "main": "lib/main.js",
@@ -20,11 +20,11 @@
   "author": "Engineerd",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.5",
+    "@actions/core": "^1.2.6",
     "@actions/exec": "^1.0.4",
     "@actions/github": "^4.0.0",
     "@actions/io": "^1.0.2",
-    "@actions/tool-cache": "^1.6.0",
+    "@actions/tool-cache": "^1.6.1",
     "mustache": "^4.0.1",
     "semver": "^7.3.2"
   },
