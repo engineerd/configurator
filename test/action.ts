@@ -179,12 +179,7 @@ describe("correctly select GitHub release based on version constraints", async (
 
   it("check latest prerelease", async () => {
     let tag = await getTag(token, "engineerd/setup-kind", "latest", true);
-    assert.equal(tag, "v0.4.0");
-  });
-
-  it("check latest non-prerelease", async () => {
-    let tag = await getTag(token, "engineerd/setup-kind", "latest", false);
-    assert.equal(tag, "v0.3.0");
+    assert.equal(tag, "v0.5.0");
   });
 });
 
