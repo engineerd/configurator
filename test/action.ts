@@ -364,6 +364,26 @@ describe("input validation", async () => {
       `"urlTemplate" supplied as input is not a valid URL.`
     );
   });
+
+  it("fromGitHubReleases is true, and both version and rawVersion are passed", async () => {
+    const input = {
+      INPUT_NAME: "cue",
+      INPUT_PATHINARCHIVE: "cue",
+      INPUT_FROMGITHUBRELEASES: "true",
+      INPUT_TOKEN: process.env["GITHUB_TOKEN"],
+      INPUT_REPO: "cuelang/cue",
+      INPUT_VERSION: "^v0.3.0-beta",
+      INPUT_INCLUDEPRERELEASES: "false",
+      INPUT_URLTEMPLATE:
+        "https://github.com/cuelang/cue/releases/download/{{version}}/cue_{{rawVersion}}_Linux_x86_64.tar.gz",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await c.configure();
+    assert.equal(fs.existsSync(path.join(cfg.binPath(), c.name)), true);
+  });
 });
 
 function cleanEnv() {

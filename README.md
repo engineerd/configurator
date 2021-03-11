@@ -85,7 +85,9 @@ Inputs:
   contains any `v` before the version when constructing the URL template). Note
   that this is [Mustache template](https://mustache.github.io/) (completely
   separate from the GitHub Actions templating system - the template _must be_
-  `{{version}}`). Required if `fromGitHubReleases` is true.
+  `{{version}}`). Note that if the version tag has a leading `v`, a
+  `{{rawVersion}}` variable that doesn't contain the leading `v` can be used in
+  the `urlTemplate`. Required if `fromGitHubReleases` is true.
 - `includePrereleases`: if true, the action will include pre-releases when
   selecting a version from GitHub Releases.
 
