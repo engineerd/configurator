@@ -79,7 +79,8 @@ export class Configurator {
         this.includePrereleases
       );
 
-      downloadURL = Mustache.render(this.urlTemplate, { version: tag });
+      const rawVersion = tag.startsWith("v") ? tag.substr(1) : tag;
+      downloadURL = Mustache.render(this.urlTemplate, { version: tag, rawVersion: rawVersion });
     } else {
       downloadURL = this.url;
     }
