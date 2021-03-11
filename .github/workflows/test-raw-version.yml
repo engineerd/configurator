@@ -1,0 +1,20 @@
+name: Test rawVersion
+on: [push, pull_request]
+
+jobs:
+  kind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./
+        with:
+          name: "cue"
+          fromGitHubReleases: "true"
+          pathInArchive: "cue"
+          repo: "cuelang/cue"
+          urlTemplate: "https://github.com/cuelang/cue/releases/download/{{version}}/cue_{{rawVersion}}_Linux_x86_64.tar.gz"
+          version: "^v0.3.0-beta"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Testing
+        run: |
+          cue --help

@@ -45,7 +45,7 @@ jobs:
               pathInArchive: "windows-amd64/helm.exe",
             }
     steps:
-      - uses: engineerd/configurator@v0.0.5
+      - uses: engineerd/configurator@v0.0.6
         with:
           name: ${{ matrix.config.name }}
           url: ${{ matrix.config.url }}
@@ -115,7 +115,7 @@ jobs:
               pathInArchive: "windows-amd64/helm.exe",
             }
     steps:
-      - uses: engineerd/configurator@v0.0.5
+      - uses: engineerd/configurator@v0.0.6
         with:
           name: ${{ matrix.config.name }}
           pathInArchive: ${{ matrix.config.pathInArchive }}
@@ -138,7 +138,7 @@ jobs:
   kind:
     runs-on: ubuntu-latest
     steps:
-      - uses: engineerd/configurator@v0.0.5
+      - uses: engineerd/configurator@v0.0.6
         with:
           name: "kind"
           fromGitHubReleases: "true"
@@ -165,7 +165,7 @@ jobs:
   kind:
     runs-on: ubuntu-latest
     steps:
-      - uses: engineerd/configurator@v0.0.5
+      - uses: engineerd/configurator@v0.0.6
         with:
           name: "kind"
           url: "https://github.com/kubernetes-sigs/kind/releases/download/v0.8.1/kind-linux-amd64"
@@ -185,7 +185,7 @@ jobs:
   kind:
     runs-on: ubuntu-latest
     steps:
-      - uses: engineerd/configurator@v0.0.5
+      - uses: engineerd/configurator@v0.0.6
         with:
           name: "h3"
           url: "https://get.helm.sh/helm-v3.3.0-linux-amd64.tar.gz"
@@ -206,7 +206,7 @@ jobs:
   kind:
     runs-on: windows-latest
     steps:
-      - uses: engineerd/configurator@v0.0.5
+      - uses: engineerd/configurator@v0.0.6
         with:
           name: "h3.exe"
           url: "https://get.helm.sh/helm-v3.3.0-windows-amd64.zip"
