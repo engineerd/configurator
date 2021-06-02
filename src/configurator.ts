@@ -91,24 +91,29 @@ export class Configurator {
     let archivePath: string | null = null;
     let randomDir: string = uuidv4();
     const tempDir = path.join(os.tmpdir(), "tmp", "runner", randomDir);
+    console.log(`Creating tempdir ${tempDir}`);
     await io.mkdirP(tempDir);
     downloadPath = await tc.downloadTool(downloadURL);
 
     switch (getArchiveType(downloadURL)) {
       case ArchiveType.None:
         await this.moveToPath(downloadPath);
+        break;
 
       case ArchiveType.TarGz:
         archivePath = await tc.extractTar(downloadPath, tempDir);
         await this.moveToPath(path.join(archivePath, this.pathInArchive));
+        break;
 
       case ArchiveType.Zip:
         archivePath = await tc.extractZip(downloadPath, tempDir);
         await this.moveToPath(path.join(archivePath, this.pathInArchive));
+        break;
 
       case ArchiveType.SevenZ:
         archivePath = await tc.extract7z(downloadPath, tempDir);
         await this.moveToPath(path.join(archivePath, this.pathInArchive));
+        break;
     }
 
     // Clean up the tempdir when done (this step is important for self-hosted runners)
