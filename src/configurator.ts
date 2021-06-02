@@ -6,6 +6,7 @@ import * as path from "path";
 import * as os from "os";
 import { getTag } from "./release";
 import Mustache from "mustache";
+import { v4 as uuidv4 } from 'uuid';
 
 const NameInput: string = "name";
 const URLInput: string = "url";
@@ -88,26 +89,30 @@ export class Configurator {
     console.log(`Downloading tool from ${downloadURL}`);
     let downloadPath: string | null = null;
     let archivePath: string | null = null;
-    const tempDir = path.join(os.tmpdir(), "tmp", "runner", "temp");
+    let randomDir: string = uuidv4();
+    const tempDir = path.join(os.tmpdir(), "tmp", "runner", randomDir);
     await io.mkdirP(tempDir);
     downloadPath = await tc.downloadTool(downloadURL);
 
     switch (getArchiveType(downloadURL)) {
       case ArchiveType.None:
-        return this.moveToPath(downloadPath);
+        await this.moveToPath(downloadPath);
 
       case ArchiveType.TarGz:
         archivePath = await tc.extractTar(downloadPath, tempDir);
-        return this.moveToPath(path.join(archivePath, this.pathInArchive));
+        await this.moveToPath(path.join(archivePath, this.pathInArchive));
 
       case ArchiveType.Zip:
         archivePath = await tc.extractZip(downloadPath, tempDir);
-        return this.moveToPath(path.join(archivePath, this.pathInArchive));
+        await this.moveToPath(path.join(archivePath, this.pathInArchive));
 
       case ArchiveType.SevenZ:
         archivePath = await tc.extract7z(downloadPath, tempDir);
-        return this.moveToPath(path.join(archivePath, this.pathInArchive));
+        await this.moveToPath(path.join(archivePath, this.pathInArchive));
     }
+
+    // Clean up the tempdir when done (this step is important for self-hosted runners)
+    return io.rmRF(tempDir);
   }
 
   async moveToPath(downloadPath: string) {

@@ -386,6 +386,30 @@ describe("input validation", async () => {
   });
 });
 
+describe("repeated jobs", async () => {
+  afterEach(() => cleanEnv());
+  after(() => {
+    rimraf.sync(tempDir);
+    rimraf.sync(cfg.binPath());
+  });
+
+  it("do not cause an error", async () => {
+    const input = {
+      INPUT_URL: "https://get.helm.sh/helm-v3.0.0-beta.3-windows-amd64.zip",
+      INPUT_NAME: "helm.exe",
+      INPUT_PATHINARCHIVE: "windows-amd64/helm.exe",
+    };
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await c.configure();
+
+    // Call it twice to make sure it uses a separate tempdir each time
+    await c.configure();
+
+  });
+});
+
 function cleanEnv() {
   const inputVars = [
     "INPUT_NAME",
