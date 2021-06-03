@@ -365,17 +365,17 @@ describe("input validation", async () => {
     );
   });
 
-  it("fromGitHubReleases is true, and both version and rawVersion are passed", async () => {
+  it("fromGitHubReleases is true, and semver version is passed", async () => {
     const input = {
       INPUT_NAME: "cue",
       INPUT_PATHINARCHIVE: "cue",
       INPUT_FROMGITHUBRELEASES: "true",
       INPUT_TOKEN: process.env["GITHUB_TOKEN"],
       INPUT_REPO: "cuelang/cue",
-      INPUT_VERSION: "^v0.3.0-beta",
+      INPUT_VERSION: "^v0.4.0",
       INPUT_INCLUDEPRERELEASES: "false",
       INPUT_URLTEMPLATE:
-        "https://github.com/cuelang/cue/releases/download/{{version}}/cue_{{rawVersion}}_Linux_x86_64.tar.gz",
+        "https://github.com/cuelang/cue/releases/download/{{version}}/cue_{{version}}_linux_amd64.tar.gz",
     };
 
     for (const key in input) process.env[key] = input[key];
@@ -406,7 +406,6 @@ describe("repeated jobs", async () => {
 
     // Call it twice to make sure it uses a separate tempdir each time
     await c.configure();
-
   });
 });
 
