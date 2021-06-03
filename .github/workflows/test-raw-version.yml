@@ -16,8 +16,8 @@ jobs:
           fromGitHubReleases: "true"
           pathInArchive: "cue"
           repo: "cuelang/cue"
-          urlTemplate: "https://github.com/cuelang/cue/releases/download/{{version}}/cue_{{rawVersion}}_Linux_x86_64.tar.gz"
-          version: "^v0.3.0-beta"
+          urlTemplate: "https://github.com/cuelang/cue/releases/download/{{version}}/cue_{{version}}_linux_amd64.tar.gz"
+          version: "^v0.4.0"
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Testing
