@@ -6,7 +6,7 @@ import * as path from "path";
 import * as os from "os";
 import { getTag } from "./release";
 import Mustache from "mustache";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const NameInput: string = "name";
 const URLInput: string = "url";
@@ -81,7 +81,10 @@ export class Configurator {
       );
 
       const rawVersion = tag.startsWith("v") ? tag.substr(1) : tag;
-      downloadURL = Mustache.render(this.urlTemplate, { version: tag, rawVersion: rawVersion });
+      downloadURL = Mustache.render(this.urlTemplate, {
+        version: tag,
+        rawVersion: rawVersion,
+      });
     } else {
       downloadURL = this.url;
     }
@@ -101,6 +104,16 @@ export class Configurator {
         break;
 
       case ArchiveType.TarGz:
+        archivePath = await tc.extractTar(downloadPath, tempDir);
+        await this.moveToPath(path.join(archivePath, this.pathInArchive));
+        break;
+
+      case ArchiveType.TarXz:
+        archivePath = await tc.extractTar(downloadPath, tempDir, "x");
+        await this.moveToPath(path.join(archivePath, this.pathInArchive));
+        break;
+
+      case ArchiveType.Tgz:
         archivePath = await tc.extractTar(downloadPath, tempDir);
         await this.moveToPath(path.join(archivePath, this.pathInArchive));
         break;
@@ -180,6 +193,8 @@ export class Configurator {
 
 export function getArchiveType(downloadURL: string): ArchiveType {
   if (downloadURL.endsWith(ArchiveType.TarGz)) return ArchiveType.TarGz;
+  if (downloadURL.endsWith(ArchiveType.TarXz)) return ArchiveType.TarXz;
+  if (downloadURL.endsWith(ArchiveType.Tgz)) return ArchiveType.Tgz;
   if (downloadURL.endsWith(ArchiveType.Zip)) return ArchiveType.Zip;
   if (downloadURL.endsWith(ArchiveType.SevenZ)) return ArchiveType.SevenZ;
 
@@ -205,6 +220,8 @@ export function binPath(): string {
 export enum ArchiveType {
   None = "",
   TarGz = ".tar.gz",
+  TarXz = ".tar.xz",
+  Tgz = ".tgz",
   Zip = ".zip",
   SevenZ = ".7z",
 }
