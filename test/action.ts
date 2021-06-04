@@ -47,6 +47,20 @@ describe("test archive type", () => {
     assert.equal(cfg.ArchiveType.TarGz, cfg.getArchiveType(c.url));
   });
 
+  it("correctly chooses the TAR.XZ archive type", () => {
+    const archiveTypeTarInput = {
+      INPUT_NAME: "some-binary",
+      INPUT_PATHINARCHIVE: "some-path",
+      INPUT_URL:
+        "https://github.com/<some-repo>/releases/download/<release>/some-tar-archive.tar.xz",
+    };
+    for (const key in archiveTypeTarInput)
+      process.env[key] = archiveTypeTarInput[key];
+
+    let c = cfg.getConfig();
+    assert.equal(cfg.ArchiveType.TarXz, cfg.getArchiveType(c.url));
+  });
+
   it("correctly chooses the ZIP archive type", () => {
     const archiveTypeZipInput = {
       INPUT_NAME: "some-binary",
@@ -107,6 +121,46 @@ describe("test URL download", async () => {
       INPUT_URL: "https://get.helm.sh/helm-v3.0.0-beta.3-linux-amd64.tar.gz",
       INPUT_NAME: "hb3",
       INPUT_PATHINARCHIVE: "linux-amd64/helm",
+    };
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await c.configure();
+
+    assert.equal(fs.existsSync(path.join(cfg.binPath(), c.name)), true);
+  });
+
+  it("correctly downloads .tar.xz files", async () => {
+    if (process.platform === "win32") {
+      // there seems to be an error with the tar utility on Windows - skipping the test for now
+      return;
+    }
+
+    const input = {
+      INPUT_URL:
+        "https://github.com/bytecodealliance/wasmtime/releases/download/v0.27.0/wasmtime-v0.27.0-x86_64-linux.tar.xz",
+      INPUT_NAME: "wasmtime",
+      INPUT_PATHINARCHIVE: "wasmtime-v0.27.0-x86_64-linux/wasmtime",
+    };
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    await c.configure();
+
+    assert.equal(fs.existsSync(path.join(cfg.binPath(), c.name)), true);
+  });
+
+  it("correctly downloads .tgz files", async () => {
+    if (process.platform === "win32") {
+      // there seems to be an error with the tar utility on Windows - skipping the test for now
+      return;
+    }
+
+    const input = {
+      INPUT_URL:
+        "https://github.com/vmware-tanzu/buildkit-cli-for-kubectl/releases/download/v0.1.3/linux-v0.1.3.tgz",
+      INPUT_NAME: "kubectl-buildkit",
+      INPUT_PATHINARCHIVE: "kubectl-buildkit",
     };
     for (const key in input) process.env[key] = input[key];
 
