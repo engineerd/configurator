@@ -19,6 +19,8 @@ const Version: string = "version";
 const IncludePrereleases: string = "includePrereleases";
 const URLTemplate: string = "urlTemplate";
 
+const GitHubReleasesRegex: RegExp = /^https:\/\/github\.com\/(?<repo>.*\/.*)\/releases\/download\//i;
+
 export function getConfig(): Configurator {
   return new Configurator(
     core.getInput(NameInput),
@@ -67,6 +69,22 @@ export class Configurator {
     this.version = version;
     this.includePrereleases = includePrereleases == "true";
     this.urlTemplate = urlTemplate;
+
+    if (!!urlTemplate && GitHubReleasesRegex.test(this.urlTemplate)) {
+      const [,repo] = GitHubReleasesRegex.exec(this.urlTemplate)!;
+
+      if (!fromGitHubRelease) {
+        this.fromGitHubReleases = true;
+      }
+
+      if (!repo) {
+        this.repo = repo;
+      }
+
+      if (!version) {
+        this.version = "latest";
+      }
+    }
   }
 
   async configure() {
