@@ -71,14 +71,14 @@ export class Configurator {
     this.urlTemplate = urlTemplate;
 
     if (!!urlTemplate && GitHubReleasesRegex.test(this.urlTemplate)) {
-      const [,repo] = GitHubReleasesRegex.exec(this.urlTemplate)!;
+      const [,urlRepo] = GitHubReleasesRegex.exec(this.urlTemplate)!;
 
       if (!fromGitHubRelease) {
         this.fromGitHubReleases = true;
       }
 
       if (!repo) {
-        this.repo = repo;
+        this.repo = urlRepo;
       }
 
       if (!version) {

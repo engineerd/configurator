@@ -214,6 +214,41 @@ describe("test GitHub release download", async () => {
     await c.configure();
     assert.equal(fs.existsSync(path.join(cfg.binPath(), c.name)), true);
   });
+
+  it("correctly overrides infered configuration based on GitHub release input", async () => {
+    const input = {
+      INPUT_NAME: "kind",
+      // before running this test, run export GITHUB_TOKEN=<github-token>
+      INPUT_TOKEN: process.env["GITHUB_TOKEN"],
+      INPUT_URLTEMPLATE:
+        "https://github.com/kubernetes-sigs/kind/releases/download/{{version}}/kind-linux-amd64",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    assert.equal(c.fromGitHubReleases, true);
+    assert.equal(c.repo, "kubernetes-sigs/kind");
+    assert.equal(c.version, "latest");
+  });
+
+  it("correctly infers configuration based on GitHub release input", async () => {
+    const input = {
+      INPUT_NAME: "kind",
+      // before running this test, run export GITHUB_TOKEN=<github-token>
+      INPUT_TOKEN: process.env["GITHUB_TOKEN"],
+      INPUT_VERSION: "^v0.11.1",
+      INPUT_URLTEMPLATE:
+        "https://github.com/kubernetes-sigs/kind/releases/download/{{version}}/kind-linux-amd64",
+    };
+
+    for (const key in input) process.env[key] = input[key];
+
+    let c = cfg.getConfig();
+    assert.equal(c.fromGitHubReleases, true);
+    assert.equal(c.repo, "kubernetes-sigs/kind");
+    assert.equal(c.version, "^v0.11.1");
+  });
 });
 
 // given that `getTag` returns the latest version that satisfies certain constraints,
