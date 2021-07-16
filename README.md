@@ -141,11 +141,29 @@ jobs:
       - uses: engineerd/configurator@v0.0.8
         with:
           name: "kind"
-          fromGitHubReleases: "true"
-          repo: "kubernetes-sigs/kind"
           urlTemplate: "https://github.com/kubernetes-sigs/kind/releases/download/{{version}}/kind-linux-amd64"
-          version: "latest"
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Testing
+        run: |
+          kind --help
+```
+
+Note that when the `urlTemplate` is a GitHub Releases Download URL, `fromGitHubReleases` will be infered to be `true`, the `repo` will be pulled from the URL, and `version` will be infered to be latest. You can override any of these by explicitly providing a value.
+
+For example, if you wanted to pin the version to to a specific range:
+
+```yaml
+jobs:
+  kind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: engineerd/configurator@v0.0.8
+        with:
+          name: "kind"
+          urlTemplate: "https://github.com/kubernetes-sigs/kind/releases/download/{{version}}/kind-linux-amd64"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: "^v0.11.1"
 
       - name: Testing
         run: |
