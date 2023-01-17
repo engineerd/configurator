@@ -4,7 +4,7 @@ import "mocha";
 import * as chai from "chai";
 import { assert, expect } from "chai";
 import * as cfg from "../src/configurator";
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as rimraf from "rimraf";
 import { getTag } from "../src/release";
 

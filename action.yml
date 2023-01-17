@@ -1,6 +1,6 @@
 name: "engineerd/configurator"
 description: "Easy and cross-platform action to download, extract, and add to path statically compiled tools."
-author: "Engineerd"
+author: "engineerd"
 inputs:
   name:
     description: "Name your tool will be configured with"
