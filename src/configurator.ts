@@ -7,6 +7,7 @@ import * as os from "os";
 import { getTag } from "./release";
 import Mustache from "mustache";
 import { v4 as uuidv4 } from "uuid";
+import * as fs from "fs-extra";
 
 const NameInput: string = "name";
 const URLInput: string = "url";
@@ -136,7 +137,10 @@ export class Configurator {
   async moveToPath(downloadPath: string) {
     let toolPath = binPath();
     await io.mkdirP(toolPath);
-    await io.mv(downloadPath, path.join(toolPath, this.name));
+    const dest = path.join(toolPath, this.name);
+    if (!fs.existsSync(dest)) {
+      fs.moveSync(downloadPath, dest);
+    }
 
     if (process.platform !== "win32") {
       await exec.exec("chmod", ["+x", path.join(toolPath, this.name)]);
