@@ -1,6 +1,6 @@
 {
   "name": "configurator",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "private": true,
   "description": "A GitHub Action that configures statically compiled tools",
   "main": "lib/main.js",
