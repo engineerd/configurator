@@ -34,4 +34,4 @@ inputs:
     description: "If true, the action will include prereleases when selecting a version from GitHub Releases."
 runs:
   using: "node16"
-  main: "lib/main.js"
+  main: "dist/index.js"
