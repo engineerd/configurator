@@ -4,7 +4,7 @@ import * as cfg from "./configurator";
 async function run() {
   try {
     await cfg.getConfig().configure();
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error.message);
   }
 }

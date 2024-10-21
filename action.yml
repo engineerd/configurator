@@ -33,5 +33,5 @@ inputs:
     default: "false"
     description: "If true, the action will include prereleases when selecting a version from GitHub Releases."
 runs:
-  using: "node16"
+  using: "node20"
   main: "dist/index.js"
