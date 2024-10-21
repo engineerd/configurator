@@ -12,7 +12,6 @@ chai.use(require("chai-as-promised"));
 
 const toolDir = path.join(os.tmpdir(), "runner", "tools");
 const tempDir = path.join(os.tmpdir(), "tmp", "runner", "temp");
-const dataDir = path.join(os.tmpdir(), "tmp", "data");
 
 process.env["RUNNER_TOOL_CACHE"] = toolDir;
 process.env["RUNNER_TEMP"] = tempDir;
@@ -233,7 +232,7 @@ describe("correctly select GitHub release based on version constraints", async (
 
   it("check latest prerelease", async () => {
     let tag = await getTag(token, "engineerd/setup-kind", "latest", true);
-    assert.equal(tag, "v0.5.0");
+    assert.equal(tag, "v0.6.0");
   });
 });
 
