@@ -1,9 +1,6 @@
 import * as github from "@actions/github";
 import * as semver from "semver";
-import {
-  ReposListReleasesResponseData,
-  ReposGetReleaseResponseData,
-} from "@octokit/types";
+
 
 export async function getTag(
   token: string,
@@ -30,10 +27,10 @@ export async function getTag(
   // by default, the GitHub releases API returns the first 30 releases.
   // while we haven't found a suitable release, increment the page index
   // and iterate through the results.
-  let result: ReposGetReleaseResponseData | undefined;
+  let result: any | undefined;
   let pageIndex = 1;
   while (result === undefined) {
-    let releases = await client.repos.listReleases({
+    let releases = await client.rest.repos.listReleases({
       owner: owner,
       repo: repoName,
       page: pageIndex,
@@ -62,10 +59,10 @@ export async function getTag(
 }
 
 function searchSatisfyingRelease(
-  releases: ReposListReleasesResponseData,
+  releases: any,
   version: string,
   includePrereleases: boolean
-): ReposGetReleaseResponseData | undefined {
+): any | undefined {
   // normally the release array returned by the API should be ordered by the release date, so
   // we iterate through it until we find the latest version that satisfies the version constraint.
   // The initial assumption is that, given that users _should_ want to use recently released versions,
